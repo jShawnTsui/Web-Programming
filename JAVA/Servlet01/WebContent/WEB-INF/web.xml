@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns="http://java.sun.com/xml/ns/javaee" 
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+    xsi:schemaLocation="http://java.sun.com//xml/ns/javaee http://java.sun.com//xml/ns/javaee/web-app_3_0.xsd"
+    version="3.0">
+    <servlet>
+        <servlet-name>reqInfoServlet</servlet-name>
+        <servlet-class>web.ReqInfoServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>resInfoServlet</servlet-name>
+        <servlet-class>web.ResInfoServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>reqInfoServlet</servlet-name>
+        <url-pattern>/reqInfo</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>resInfoServlet</servlet-name>
+        <url-pattern>/resInfo</url-pattern>
+    </servlet-mapping> 
+    <servlet>
+        <servlet-name>hello1Servlet</servlet-name>
+        <servlet-class>web.Hello1Servlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>hello1Servlet</servlet-name>
+        <url-pattern>/hello1</url-pattern>
+    </servlet-mapping>  
+</web-app>
