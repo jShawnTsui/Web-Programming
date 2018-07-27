@@ -1,8 +1,8 @@
 function myFunction() {
-	console.log('Function was called.');
+	console.log('Module1.');
 }
 
-var myString = 'String!';
+var myString = 'Module1.';
 
 module.exports.myFunction = myFunction;
 module.exports.myString = myString;
