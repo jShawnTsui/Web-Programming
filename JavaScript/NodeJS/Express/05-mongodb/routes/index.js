@@ -10,5 +10,10 @@ router.get('/', function(req, res, next) {
   res.render('index', { title: 'Shawn', condition: true, anyArray: [1,2,3] });
 });
 
+router.get();
+
+router.post();
+
+
 
 module.exports = router;
