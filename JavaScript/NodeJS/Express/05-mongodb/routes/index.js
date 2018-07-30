@@ -10,9 +10,25 @@ router.get('/', function(req, res, next) {
   res.render('index');
 });
 
-// router.get();
+router.get('/get-data', function(req, res, next) {
+  mongo.connect(url, function(err, db) {
+    assert.equal(null, err);
+    var cursor = 
+  });
+});
 
-// router.post();
+router.post('/insert', function(req, res, next) {
+  var item = {
+    title: req.body.title,
+    content: req.body.content,
+    author: req.body.author
+  };
+
+  mongo.connect(url, function(err, db) {
+    assert.equal(null, err);
+    db.collection('user-data').insertOne(item, function(err, ))
+  });
+});
 
 
 
