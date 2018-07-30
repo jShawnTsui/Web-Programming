@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
-var mongo = require('mongodb');
+var mongo = require('mongodb').MongoClient;
+var objectID = require('mongodb').ObjectID;
 var assert = require('assert');
 
 var url = 'mongodb://localhost:27017';
@@ -39,6 +40,42 @@ router.post('/insert', function(req, res, next) {
     db.collection('user-data').insertOne(item, function(err, result) {
       assert.equal(null, err);
       console.log('Item inserted');
+      client.close();
+    });
+  });
+  res.redirect('/');
+});
+
+router.post('/update', function(req, res, next) {
+  var item = {
+    title: req.body.title,
+    content: req.body.content,
+    author: req.body.author
+  };
+
+  var id = req.body.id;
+
+  mongo.connect(url, { useNewUrlParser: true }, function(err, client) {
+    assert.equal(null, err);
+    let db = client.db('test');
+    db.collection('user-data').updateOne({"_id": objectID(id)}, {$set: item}, function(err, result) {
+      assert.equal(null, err);
+      console.log('Item updated');
+      client.close();
+    });
+  });
+  res.redirect('/');
+});
+
+router.post('/delete', function(req, res, next) {
+  var id = req.body.id;
+
+  mongo.connect(url, { useNewUrlParser: true }, function(err, client) {
+    assert.equal(null, err);
+    let db = client.db('test');
+    db.collection('user-data').deleteOne({"_id": objectID(id)}, function(err, result) {
+      assert.equal(null, err);
+      console.log('Item deleted');
       client.close();
     });
   });
