@@ -9,7 +9,7 @@ export default class App extends React.Component {
 
   state = {
     loading: false,
-    meetups: []
+    meetups: [] 
   }
 
   async componentDidMount() {
@@ -26,11 +26,12 @@ export default class App extends React.Component {
         </View>
       )
     }
+
     return (
       <View style={styles.container}>
         <Text>Meet Up</Text>
         {this.state.meetups.map((meetup, i) => (
-          <Text key={i} >{meetup.title}</Text>
+          <Text key={i}>{ meetup.title }</Text>
         ))}
       </View>
     );
