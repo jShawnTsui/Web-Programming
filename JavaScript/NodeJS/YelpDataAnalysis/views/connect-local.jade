@@ -1,0 +1,38 @@
+doctype html
+head
+  title Welcome!
+  link(rel='stylesheet', href='//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css')
+  link(rel='stylesheet', href='//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css')
+  style.
+    body         { padding-top:80px; }
+
+.container
+  .col-sm-6.col-sm-offset-3
+    h1
+      span.fa.fa-user
+      |  Add Local Account
+    -if(messages)
+        div#alert #{messages}
+        
+    form(action='/login', method='post')
+        .form-signin
+        label User Type
+        select#userType.form-control.form-control-inline
+          option Business
+          option Individual
+        
+        .form-group
+        label Email
+        input.form-control(type='text', name='email')
+        
+        .form-group
+        label Password
+        input.form-control(type='password', name='password')
+  
+        button.btn.btn-warning.btn-lg.btn-block(type='submit') Local
+        
+
+    p
+      a(href="/profile") Go back to profile
+
+    

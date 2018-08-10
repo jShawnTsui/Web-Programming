@@ -1,0 +1,107 @@
+extend layout
+block content
+  h2 EXPOLRE A CATEGORY
+  div(class="container")
+    div(class="row")
+      div(class="span6")
+        table(class="table table-bordered table-hover")
+          tr(class='error')
+            th Category
+            th Total Number
+            th Average Popularity
+          tr(class='success')
+            td=resGeneral[0][0]
+            td=resGeneral[0][1]
+            td=Number(resGeneral[0][2]).toFixed(2)
+      div(class="span6")
+        table(class="table table-bordered table-hover")
+          tr(class='error')
+            th City
+            th Total Number
+            th Average popularity
+          - for (var inx = 0; inx < resState.length; inx++)
+            tr(class=(inx%4==0)?'success':((inx%4==1)?'error':((inx%4==2)?'warning':'info')))
+              td=resState[inx][0]
+              td=resState[inx][1]
+              td=Number(resState[inx][2]).toFixed(2)
+  p
+    form(method='get' action='cityCate')
+      input(name='catName', type='hidden', value=resGeneral[0][0])
+      select(name='city')
+        - for (var inx = 0; inx < resState.length; inx++)
+          option #{resState[inx][0]}
+      input(type='submit' value='Find this category in a city', class='btn', style='background-color:#4267b2;color:white;')
+  
+  #piechart(style='width: 500px; height: 400px; float:left;')
+  #barchart(style='width: 500px; height: 400px; float:right;')
+
+  p
+    form(method='get', action='/business')
+      input(type='submit', value='Return', class="btn btn-success")
+
+  script(type='text/javascript', src='https://www.gstatic.com/charts/loader.js')
+  script.
+    google.charts.load('current', {'packages':['corechart']});
+    google.charts.setOnLoadCallback(drawChart);
+    function drawChart() {
+      var pie_info = [[]];
+      var bar_info = [[]];
+      bar_info[0][0] = 'City';
+      bar_info[0][1] = 'Popularity';
+      bar_info[0][2] = {role: 'style'};
+
+      pie_info[0][0] = 'City';
+      pie_info[0][1] = 'Number';
+      pie_info[0][2] = {role: 'style'};
+      color = ['plum','gold','turquoise','violet','skyblue'];
+      var results = '!{resState.join(';')}'.split(';');
+      for (var inx = 0; inx < results.length; inx++){
+        bar_info[inx+1] = [];
+        pie_info[inx+1] = [];
+        var result = results[inx].split(',');
+        bar_info[inx+1][0] = result[0];
+        bar_info[inx+1][1] = parseFloat(result[2]);
+        bar_info[inx+1][2] = color[inx%5];
+
+        pie_info[inx+1][0] = result[0];
+        pie_info[inx+1][1] = parseInt(result[1]);
+        pie_info[inx+1][2] = color[inx%5];
+
+      }
+      var bar_data = google.visualization.arrayToDataTable(bar_info);
+      var pie_data = google.visualization.arrayToDataTable(pie_info);
+      var bar_options = {
+        legend: 'none',
+        backgroundColor: 'transparent',
+        title: 'Average Popularity For Every City',
+        chartArea: {width: '60%'},
+        hAxis: {
+          title: 'City Name',
+          minValue: 0
+        },
+        vAxis: {
+          title: 'Rank'
+        }
+      };
+
+      var pie_options = {
+        backgroundColor: 'transparent',
+        title: 'Category Percentage',
+        chartArea: {width: '80%'},
+        hAxis: {
+          title: 'Restaurants Name',
+          minValue: 0
+        },
+        vAxis: {
+          title: 'Rank'
+        }
+      };
+
+      var bar_chart = new google.visualization.ColumnChart(document.getElementById('barchart'));
+      var pie_chart = new google.visualization.PieChart(document.getElementById('piechart'));
+
+      bar_chart.draw(bar_data, bar_options);
+      pie_chart.draw(pie_data, pie_options);
+    }
+
+

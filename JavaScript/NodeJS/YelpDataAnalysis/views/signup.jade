@@ -1,0 +1,33 @@
+extend layout
+block content
+    .container
+      .col-sm-6.col-sm-offset-3
+        h1
+          span.fa.fa-sign-in
+          | Signup
+        p
+          -if(messages)
+            alert.alert-danger !{messages}
+
+          form(action='/signup', method='post')
+            .form-group
+            label Email
+            input.form-control(type='text', name='email')
+
+            .form-group
+            label Password
+            input.form-control(type='password', name='password')
+            
+            .form-group
+            button.btn.btn.warning.btn-lg.btn-block(type='submit') Sign up
+        
+        label Or Sign up with 
+            a.btn.btn-primary(href='/auth/facebook')
+                span.fa.fa-facebook
+                |  Facebook
+
+        label Already have an account? 
+            a(href='/login') Login
+        label Or go 
+            a(href='/') home
+

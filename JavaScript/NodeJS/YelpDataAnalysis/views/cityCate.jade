@@ -1,0 +1,177 @@
+extend layout
+block content
+  h2 A CATEGORY IN A CITY
+  p
+    table(class="table table-bordered table-hover")
+      tr(class='error')
+        th CITY
+        th CATEGORY
+      tr(class='warning')
+        td=resTrend[0][0]
+        td=resTrend[0][1]
+    table(class="table table-bordered table-hover")
+      tr(class='error')
+        th Year
+        th Quarter
+        th Percentage (NUM OF REVIEWS IN THE GIVEN CATEGORY IN A QUARTER / TOTAL REVIEWS IN THE QUARTER)
+      - for (var inx = 0; inx < resTrend.length; inx++)
+        tr(class=(inx%4==0)?'success':((inx%4==1)?'error':((inx%4==2)?'warning':'info')))
+          td=resTrend[inx][2]
+          td=resTrend[inx][3]
+          td=Number(resTrend[inx][4]).toFixed(2)
+  #timechart(style='width: 700px; height: 400px;')
+  p
+    table(class="table table-bordered table-hover")
+      tr(class='error')
+        th Zipcode
+        th Popularity
+        th Business Count
+        th population
+        th Medium Age
+        th Income
+      - for (var inx = 0; inx < resZipcode.length; inx++)
+        tr(class=(inx%4==0)?'success':((inx%4==1)?'error':((inx%4==2)?'warning':'info')))
+          td=resZipcode[inx][0]
+          td=Number(resZipcode[inx][1]).toFixed(2)
+          td=resZipcode[inx][2]
+          td=resZipcode[inx][3]
+          td=Number(resZipcode[inx][4]).toFixed(2)
+          td=resZipcode[inx][5]
+  #piechart(align="center",style='width: 900px; height: 350px;')
+  #barchart(align="center",style='width: 1000px; height: 350px;')
+
+  p
+    form(method='get' action='cityCate' class='form-inline')
+      input(name='city', placeholder='Change A Citiy', class='form-control')
+      input(name='catName', placeholder='Change A Category', class='form-control')
+      input(type='submit' value='Expolre Another City or Category' class="btn btn-primary")
+  a(style='color:grey;')| Hot Categories: 
+  table(style='width:100%;')
+    tr(style='color:grey;')
+      td Restaurants
+      td Shopping
+      td Food
+      td Home Services
+      td Beauty & Spas  
+      td Health & Medical
+    tr(style='color:grey;')
+      td Chinese
+      td Local Services
+      td Automotive
+      td Nightlife
+      td Event Planning & Services
+      td Bars
+    tr(style='color:grey;')
+      td Active Life
+      td Fashion
+      td Arts & Entertainment
+      td Hotels & Travel
+      td Fast Food
+      td Doctors 
+    tr(style='color:grey;')
+      td Real Estate 
+      td Sandwiches
+      td Pizza
+      td Coffee & Tea 
+      td Fitness & Instruction
+      td Beer
+  p
+    form(method='get', action='/business')
+      input(type='submit', value='Return', class="btn btn-success")
+ 
+  script(type='text/javascript', src='https://www.gstatic.com/charts/loader.js')
+  script.
+    google.charts.load('current', {'packages':['corechart']});
+    google.charts.setOnLoadCallback(drawChart);
+    function drawChart() {
+      var info = [[]];
+      info[0][0] = {'date':'Time'};
+      info[0][1] = {'number':'Rating'};
+      var results = '!{resTrend.join(';')}'.split(';');
+      for (var inx = 0; inx < results.length; inx++){
+        info[inx+1] = [];
+        var result = results[inx].split(',');
+        info[inx+1][0] = new Date(parseInt(result[2]), 3*parseInt(result[3])-1, 1);
+        info[inx+1][1] = parseFloat(result[4]);
+      }
+      var data = google.visualization.arrayToDataTable(info);
+
+      var options = {
+        legend: 'none',
+        backgroundColor: 'transparent',
+        title: 'Popularity over Time',
+        chartArea: {width: '80%'},
+        hAxis: {
+          title: 'Time',
+        },
+        vAxis: {
+          title: 'Popularity'
+        }
+      };
+
+      var chart = new google.visualization.LineChart(document.getElementById('timechart'));
+
+      chart.draw(data, options);
+
+      var bar_info = [[]];
+      var pie_info = [[]];
+      pie_info[0][0] = 'ZipCode';
+      pie_info[0][1] = 'Target Market';
+      pie_info[0][2] = {role: 'style'};
+
+      bar_info[0][0] = 'Zipcode';
+      bar_info[0][1] = 'Popularity';
+      bar_info[0][2] = 'Competitive Landscape';
+      color = ['plum','gold','turquoise','violet','skyblue'];
+      var bar_results = '!{resZipcode.join(';')}'.split(';');
+      for (var inx = 0; inx < bar_results.length; inx++){
+        bar_info[inx+1] = [];
+        pie_info[inx+1] = [];
+        var bar_result = bar_results[inx].split(',');
+        bar_info[inx+1][0] = bar_result[0];
+        bar_info[inx+1][1] = parseFloat(bar_result[1]);
+        bar_info[inx+1][2] = 5/parseInt(bar_result[2]);
+        pie_info[inx+1][0] = bar_result[0];
+        pie_info[inx+1][1] = parseFloat(bar_result[3])*parseFloat(bar_result[5]);
+        pie_info[inx+1][2] = color[inx%5];
+      }
+      var bar_data = google.visualization.arrayToDataTable(bar_info);
+      var pie_data = google.visualization.arrayToDataTable(pie_info);
+
+      var bar_options = {
+        backgroundColor: 'transparent',
+        title: 'Easiness to Enter a Location(Zipcode)',
+        chartArea: {width: '90%'},
+        legend: { position: 'top'},
+        isStacked: true,
+        hAxis: {
+          title: 'Zipcode',
+        },
+        vAxis: {
+          title: 'Easiness'
+        }
+      };
+
+      var pie_options = {
+        backgroundColor: 'transparent',
+        title: 'Target Market',
+        chartArea: {width: '80%'},
+        legend: { position: 'top', maxLines: 2 },
+        isStacked: true,
+        hAxis: {
+          title: 'Zipcode',
+          minValue: 0
+        },
+        vAxis: {
+          title: 'Target Market'
+        }
+      };
+
+      var bar_chart = new google.visualization.ColumnChart(document.getElementById('barchart'));
+      bar_chart.draw(bar_data, bar_options);
+
+      var pie_chart = new google.visualization.PieChart(document.getElementById('piechart'));
+      pie_chart.draw(pie_data, pie_options);
+
+    }
+

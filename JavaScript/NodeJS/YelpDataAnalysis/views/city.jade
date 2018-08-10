@@ -1,0 +1,122 @@
+extend layout
+block content
+  h2 CITY RESULTS
+  p
+    table(class="table table-bordered table-hover")
+      tr(class='error')
+        th CITY
+        th Business Count
+        th Educational Institutions
+        th Yelp Users
+        th Average Income
+        th Medium Age
+      tr(class='warning')
+        td=resInfo[0][0]
+        td=resInfo[0][1]
+        td=resInfo[0][2]
+        td=resInfo[0][3]
+        td=Number(resInfo[0][4]).toFixed(2)
+        td=Number(resInfo[0][5]).toFixed(2)
+  p
+    table(class="table table-bordered table-hover")
+      tr(class='error')
+        th Business count (rating >= 4)
+        th &nbsp;&nbsp;&nbsp;
+        th Business count (rating <= 2)
+        th&nbsp;&nbsp;&nbsp;
+        th Business count (2 < rating < 4)
+      tr(class='warning')
+        td=resRating1[0][0]
+        td &nbsp;&nbsp;&nbsp;
+        td=resRating2[0][0]
+        td &nbsp;&nbsp;&nbsp;
+        td=resRating3[0][0]
+  p
+    table(class="table table-bordered table-hover")
+      tr(class='error')
+        th Category
+        th Popularity
+      - for (var inx = 0; inx < resCats.length; inx++)
+        tr(class=(inx%4==0)?'success':((inx%4==1)?'error':((inx%4==2)?'warning':'info')))
+          td=resCats[inx][0]
+          td=Number(resCats[inx][1]).toFixed(2)
+
+  #barchart(style='width: 1000px; height: 400px; float:right;')
+  script(type='text/javascript', src='https://www.gstatic.com/charts/loader.js')
+  script.
+    google.charts.load('current', {'packages':['corechart']});
+    google.charts.setOnLoadCallback(drawChart);
+    function drawChart() {
+      var bar_info = [[]];
+      bar_info[0][0] = 'Category';
+      bar_info[0][1] = 'Popularity';
+      bar_info[0][2] = {role: 'style'};
+
+      color = ['plum','gold','turquoise','violet','skyblue'];
+      var results = '!{resCats.join(';').replace("\'","")}'.split(';');
+      for (var inx = 0; inx < results.length; inx++){
+          bar_info[inx+1] = [];
+          var result = results[inx].split(',');
+          bar_info[inx+1][0] = result[0];
+          bar_info[inx+1][1] = parseFloat(result[1]);
+          bar_info[inx+1][2] = color[inx%5];
+      }
+      var bar_data = google.visualization.arrayToDataTable(bar_info);
+      var bar_options = {
+        backgroundColor: 'transparent',
+        legend: 'none',
+        title: 'Top 30 Popular Categories',
+        chartArea: {width: '80%'},
+        hAxis: {
+          title: 'Category Name',
+          minValue: 0
+        },
+        vAxis: {
+          title: 'Popularity'
+        }
+      };
+
+      var bar_chart = new google.visualization.ColumnChart(document.getElementById('barchart'));
+
+      bar_chart.draw(bar_data, bar_options);
+    }
+  
+  p
+    form(method='get' action='cityCate' class='form-inline')
+      input(name='city', type='hidden', value=resInfo[0][0])
+      input(name='catName', placeholder='Input A Category', class='form-control')
+      input(type='submit' value='Expolre A Business Category in this City' class="btn btn-primary")
+  p(style='color:grey;')| Hot Categories: 
+    table(style='width:100%;')
+      tr(style='color:grey;')
+        td Restaurants
+        td Shopping
+        td Food
+        td Home Services
+        td Beauty & Spas  
+        td Health & Medical
+      tr(style='color:grey;')
+        td Chinese
+        td Local Services
+        td Automotive
+        td Nightlife
+        td Event Planning & Services
+        td Bars
+      tr(style='color:grey;')
+        td Active Life
+        td Fashion
+        td Arts & Entertainment
+        td Hotels & Travel
+        td Fast Food
+        td Doctors 
+      tr(style='color:grey;')
+        td Real Estate 
+        td Sandwiches
+        td Pizza
+        td Coffee & Tea 
+        td Fitness & Instruction
+        td Beer
+  p
+    form(method='get', action='/business')
+      input(type='submit', value='Return', class="btn btn-success")
+

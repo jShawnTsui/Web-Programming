@@ -1,0 +1,85 @@
+extend layout
+block content
+  h2 USER PAGE
+  div(class='container')
+    div(class='row')
+      div(class='span12')
+        div(class='tabbable' id='myTabs')
+          ul(class='nav nav-tabs')
+            li(class='active' )
+              a(href="#myPanel1" data-toggle="tab"  style='background-color:#4267b2;color:white;') Search by Category
+            li
+              a(href="#myPanel2" data-toggle="tab"  style='background-color:white;color:#4b4f56;') Look What My Friends Like
+          div(class='tab-content')
+            div(class="tab-pane active" id="myPanel1")
+              p
+                form(method='get' action='userQuery')
+                  ul.list-inline
+                    input(name="alcohol",type="checkbox") 
+                    | &nbsp;Serve Alocohol
+                    &nbsp;
+                    input(name="crdt_card",type="checkbox") 
+                    | &nbsp;Accept Credit Card
+                    &nbsp;
+                    input(name='catName', placeholder='Please Enter A Category', type='text')
+                    | &nbsp;
+                  ul.list-inline
+                    input(type='text', style='width:350px', id='address', placeholder='Address, city, state or zipcode', onchange='showAddress()', class="form-control")
+                    input(name='latitude', type='hidden', id='lat')
+                    input(name='longitude', type='hidden', id='lng')
+                    input(type='submit', value='Search For Business',class="btn", style='background-color:#4267b2;color:white;')
+
+                    #map_canvas(style='width: 600px; height: 400px')
+            div(class="tab-pane" id="myPanel2")
+              p
+                form(method='get' action='friend' class="form-inline")
+                  div(class="span12")
+                    span(class="help-block")|User ID Can Not Be Empty
+                  input(name='u_id', value='FIk4lQQu1eTe2EpzQ4xhBA' class="form-control")
+                  &nbsp;
+                  input(type='submit' value='My Friends Like' class="btn" style='background-color:#4267b2;color:white;')
+
+  p
+    form(method='get' action='/profile')
+      input(type='submit' value='Return' style='background-color:#4caf50;color:white;' class="btn")
+   
+  script.
+    var map = null;
+    var geocoder = null;
+    var marker;
+
+    function initialize() {
+        map = new google.maps.Map(document.getElementById('map_canvas'), {
+          center: {lat: 39.9525839, lng: -75.1652215},
+          zoom: 10
+        });
+        geocoder = new google.maps.Geocoder();
+    }
+
+    function showAddress() {
+      var address = document.getElementById('address').value;
+      if (geocoder) {
+        geocoder.geocode( { 'address': address}, function(results, status) {
+          if (status == google.maps.GeocoderStatus.OK) {
+            map.setCenter(results[0].geometry.location);
+            if(marker)
+              marker.setMap(null);
+            marker = new google.maps.Marker({
+                map: map,
+                position: results[0].geometry.location,
+                draggable: true
+            });
+            google.maps.event.addListener(marker, "dragend", function() {
+              document.getElementById('lat').value = marker.getPosition().lat();
+              document.getElementById('lng').value = marker.getPosition().lng();
+            });
+            document.getElementById('lat').value = marker.getPosition().lat();
+            document.getElementById('lng').value = marker.getPosition().lng();
+          } else {
+            alert('Geocode was not successful for the following reason: ' + status);
+          }
+        });
+      }
+    }
+
+  script(async='', defer='', src='https://maps.googleapis.com/maps/api/js?key=AIzaSyAvzrl10zPvnd7uRMlQTpuih987tVzIrhI&callback=initialize')

@@ -1,0 +1,85 @@
+doctype html
+html(lang='en')
+  head 
+    meta(charset='utf-8')
+    meta(http-equiv='X-UA-Compatible', content='IE=edge')
+    meta(name='viewport', content='width=device-width, initial-scale=1')
+    meta(name='description', content='')
+    meta(name='author', content='')
+    title Yelp Data Analysis
+    // Bootstrap Core CSS
+    link(href='css/bootstrap.min.css', rel='stylesheet')
+    // Custom CSS
+    link(href='css/landing-page.css', rel='stylesheet')
+    // Custom Fonts
+    link(href='font-awesome/css/font-awesome.min.css', rel='stylesheet', type='text/css')
+    link(href='https://fonts.googleapis.com/css?family=Lato:300,400,700,300italic,400italic,700italic', rel='stylesheet', type='text/css')
+    
+    nav.navbar.navbar-inverse
+        .container-fluid
+        .navbar-header
+          a.navbar-brand(href='#') Yelp Data Analysis
+        ul.nav.navbar-nav
+          li.active
+            a(href='/') Home
+          li
+            a(href='/feedback') Feedback
+          li
+            a(href='/profile') Account
+          li
+            a(href='/logout') Logout
+              
+        form(method='get', action='http://www.google.com/search' style='float:right;')
+          div(style='border:1px;padding:4px 4px 4px 4px;width:20em;')
+            table(border='0', align='center', cellpadding='0')
+              tr
+                td
+                  input(type='text', name='q', size='25', maxlength='255', value='' class="form-control")
+                td
+                  input(type='submit', value='Search' class="btn btn-primary")
+              tr
+block content
+  .container
+  .page-header.text-center
+    h1
+      span.fa.fa-anchor
+      |  Profile Page
+    .row
+    .col-sm-6
+        .well
+            span.fa.fa-user
+            |  Local Account
+            -if (user.local.email)
+                p ID: #{user._id}
+                p Email: #{user.local.email}
+                p Password: #{user.local.password}
+                a(href="/unlink/local" class="btn btn-default btn-primary") Delete Account
+            p
+            a(href="/connect/local" class="btn btn-default btn-success") Connect Local
+    .col-sm-6
+        .well
+            p.text-primary
+                span.fa.fa-facebook
+                |  Facebook Account
+            -if (user.facebook.token)
+                p ID: #{user.facebook.id}
+                p Token: #{user.facebook.token}
+                p Email: #{user.facebook.email}
+                p Name: #{user.facebook.name}
+                    a(href="/unlink/facebook" class="btn btn-default btn-primary") Unlink Facebook Account
+            p
+                a(href="/connect/facebook" class="btn btn-default btn-success") Connect Facebook
+  
+  .container
+  .page-header.text-center
+    h1  Let's Do Business!
+    .row
+        .col-sm-6
+              form(method='get', action='/business' class="col-sm-offset-4 col-sm-4 form-horizontal")
+                  input(type='submit', value='Business' class="btn btn-primary btn-block")
+        .col-sm-6
+              form(method='get', action='/user' class="col-sm-offset-4 col-sm-4 form-horizontal")
+                input(type='submit', value='User' class="btn btn-primary btn-block")
+
+                
+                
